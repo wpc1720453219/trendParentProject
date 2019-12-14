@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: index-zuul-service
+  zipkin:
+    base-url: http://localhost:9411
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+#网关 所有的访问 /api-codes/ 的请求，都会自动转到 INDEX-CODES-SERVICE 去。 而 INDEX-CODES-SERVICE 有3个，就会在这3个之间来回切换。
+zuul:
+  routes:
+    api-a:
+      path: /api-codes/**
+      serviceId: INDEX-CODES-SERVICE
+    api-b:
+      path: /api-backtest/**
+      serviceId: TREND-TRADING-BACKTEST-SERVICE
+    api-c:
+      path: /api-view/**
+      serviceId: TREND-TRADING-BACKTEST-VIEW
+    ui-js:
+      path: /js/**
+      serviceId: TREND-TRADING-BACKTEST-VIEW
+      stripPrefix: false
+    ui-css:
+      path: /css/**
+      serviceId: TREND-TRADING-BACKTEST-VIEW
+      stripPrefix: false
+#  如果你想在zuul网关加载静态文件，像站长这样做是不行的，除非js和css文件都用绝对路径写死在html里
+#解决办法是新加两个代理静态文件的网关，然后设置stripPrefix: false(意思是直接加载path)
+#如api-c，path: /api-view/**，默认的stripPrefix: true,那么访问8031/api-view/a = 8041/a,如果此时stripPrefix: false,那么访问8031/api-view/a = 8041/api-view/a
+#  所以我加了js和css的路由，所以就解决了问题

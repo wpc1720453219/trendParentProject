@@ -1,0 +1,21 @@
+#中心的地址是 http://localhost:8761/eureka/，
+#与 eureka server 里的application.yml 中的 defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/ 遥相呼应。
+# 配置 配置服务器时 把 eureka 地址信息移动到了 bootstrap.yml 里。
+spring:
+  application:
+    name: trend-trading-backtest-view
+  thymeleaf:
+    mode: LEGACYHTML5
+    encoding: UTF-8
+    content-type: text/html
+    cache: false
+  zipkin:
+    base-url: http://localhost:9411
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      cors:
+        allowed-origins: "*"
+        allowed-methods: "*"

@@ -1,0 +1,95 @@
+springcloud
+1.服务注册中心 Eureka
+  微服务已经被注册中心管理,所以 视图微服务 就可以通过 注册中心定位并访问 数据微服务
+  
+  
+2.hutool 是一个工具类
+日期与字符串转换
+文件操作
+转码与反转码
+随机数生成
+压缩与解压
+编码与解码
+CVS文件操作
+缓存处理
+加密解密
+定时任务
+邮件收发
+二维码创建
+FTP 上传与下载
+图形验证码生成
+  
+3.spring-cloud-dependencies  
+使用dependencyManagement进行版本管理
+
+4.启动类， 注解多了个 @EnableDiscoveryClient， 表示用于发现eureka 注册中心的微服务。
+
+还多了个 RestTemplate，就表示用 restTemplate 这个工具来做负载均衡
+
+5. zipkin服务链路  Sampler
+
+6.config-server 
+修改一些配置信息，比如说 版本信息吧~ 倘若没有配置服务， 那么就需要挨个修改微服务，挨个重新部署微服务，这样就比较麻烦。
+为了偷懒， 这些配置信息就会放在一个公共的地方，比如git, 然后通过配置服务器把它获取下来，然后微服务再从配置服务器上取下来。
+
+7./master/respo/product-view-service-feign-dev.properties
+访问资源的形式如下：
+The HTTP service has resources in the following form:
+/{application}/{profile}[/{label}]
+/{application}-{profile}.yml
+/{label}/{application}-{profile}.yml
+/{application}-{profile}.properties
+/{label}/{application}-{profile}.properties
+
+8. rabbitMQ 来进行消息广播
+
+
+
+
+
+1. 哪些微服务是如何彼此调用的？ sleuth 服务链路追踪
+2. 如何在微服务间共享配置信息？配置服务 Config Server
+3. 如何让配置信息在多个微服务之间自动刷新？ RabbitMQ 总线 Bus  动态刷新 配置
+4. 如果数据微服务集群都不能使用了， 视图微服务如何去处理? 断路器 Hystrix
+5. 视图微服务的断路器什么时候开启了？什么时候关闭了？ 断路器监控 Hystrix Dashboard
+6. 如果视图微服务本身是个集群，那么如何进行对他们进行聚合监控？ 断路器聚合监控 Turbine Hystrix Dashboard
+7. 如何不暴露微服务名称，并提供服务？ Zuul 网关
+
+
+总的来说，三部分
+第一部分： 链路追踪
+第二部分：共享配置信息更新
+第三部分：网关，断路器监控
+
+
+
+
+
+
+
+
+
+
+
+
+1.项目
+eureka-server  注册中心，管理微服务
+third-part-index-data-project 第三方数据，作用相当第三方数据的储存地
+index-gather-store-service   获取第三方数据到我的rdies中 ，定时刷新，断路器
+		<!-- 定时器 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
+        </dependency>
+index-codes-service   指数代码微服务，就是把 rdies里数据那过来保存，做集群
+index-data-service    数据代码微服务，就是把 rdies里数据那过来保存，做集群
+
+index-zuul-service  网关
+
+trend-trading-backtest-service ：模拟回测服务  其实就是用feign 取数据好写业务代码
+trend-trading-backtest-view   ： 模拟回测视图   去数据，显示
+
+
+
+
+
